@@ -1,0 +1,32 @@
+﻿information,Types
+PATIENT INFORMATION,step 1
+Unique Patient ID,Input
+Sex:,"select (Male,Female)"
+Date of Birth,date
+ART start date,date
+last pickup date,date
+Date of death:,date
+Date of Death Was Confirmed,input
+Death Information Provided By,input
+Death Information Validated by:,input
+Cause of death (be very detailed),textarea
+MEDICAL HISTORY,step 2
+Comorbid Conditions (if any) ,textarea
+Medications & Previous Treatments  Prior to Death :,textarea
+Primary Diagnosis (if any):,textarea
+Secondary Diagnosis (if any):,textarea
+CLINICAL INFORMATION,step 3
+Symptoms prior to death:,textarea
+Duration of symptoms (in months):,input
+"Diagnostic test and results conducted Prior to Death (i.e.Viral Load Assesment, CD4 etc):",textarea
+Treatment received prior to death:,textarea
+Location(s) of the treatment received:,input
+Response to treatment offered:,textarea
+location of death:,textarea
+SOCIAL AND ENVIRONMENTAL FACTORS,step 4
+"Support system prior to death  (i.e treatment supporters, caregivers)",textarea
+Socioeconomic status prior to death,"select (low, medium, high) "
+Living conditions  prior to death,textarea
+REVIEWER INFORMATION,step 5
+Name of reviewer,input
+Date Of Review:,
