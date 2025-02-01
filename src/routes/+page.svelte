@@ -1,5 +1,8 @@
 <script lang="ts">
-  import CircleUser from "lucide-svelte/icons/circle-user";
+
+  import { CalendarIcon } from "lucide-svelte";
+  import * as Select from "$lib/components/ui/select/index.js";
+  import FinalPage from "$lib/components/final-page.svelte";
 
   import { Button } from "$lib/components/ui/button/index.js";
   import * as Card from "$lib/components/ui/card/index.js";
@@ -11,7 +14,8 @@
   import {
     superForm,
   } from "sveltekit-superforms";
-  import {   step1Schema, step2Schema, step3Schema, step4Schema,personalInfoSchema  } from '$lib/schemas';
+  import {   step1Schema, step2Schema, step3Schema, step4Schema,personalInfoSchema } from '$lib/schemas';
+  import {   socioeconomicOptions, facilityOptions, sexOptions } from '$lib';
   import { Check } from 'lucide-svelte';
 	import type { PageData } from './$types.ts';
   import { page } from '$app/stores';
@@ -112,6 +116,22 @@
     $delayed ? 'Submitting...' : (currentStep === totalSteps ? 'Submit' : 'Next')
   );
 
+
+
+  type Sex = typeof sexOptions[number]['value'] | undefined;
+
+
+  const sexTriggerContent = $derived(
+    $form?.sex ? sexOptions.find((option) => option.value === $form.sex)?.label : "Select sex"
+  );
+
+  const socioeconomicTriggerContent = $derived(
+    $form?.socioeconomicStatus ? socioeconomicOptions.find((option) => option.value === $form.socioeconomicStatus)?.label : "Select Status"
+  );
+  const facilityTriggerContent = $derived(
+    $form?.facility ? facilityOptions.find((option) => option.value === $form.facility)?.label : "Select the Facility"
+  );
+
   function getCurrentStepFields(step: number) {
     switch (step) {
       case 1:
@@ -135,51 +155,11 @@
   }
 </script>
 {#if isSubmitted}
-  <!-- Success View -->
-  <div class="fixed inset-0 flex items-center justify-center bg-background">
-    <div class="w-full max-w-md p-6 text-center space-y-6">
-      <!-- Progress Steps -->
-      <div class="flex justify-between mb-8">
-        {#each Array(5) as _, i}
-          <div class="flex items-center">
-            <div class={`rounded-full w-8 h-8 flex items-center justify-center
-              ${i < 5 ? 'bg-primary text-white' : 'bg-muted text-muted-foreground'}`}>
-              {i + 1}
-            </div>
-            {#if i < 4}
-              <div class="h-[2px] w-12 bg-primary"></div>
-            {/if}
-          </div>
-        {/each}
-      </div>
-
-      <div class="space-y-4">
-        <h1 class="text-3xl font-semibold tracking-tight">Submission was Successful</h1>
-        <p class="text-muted-foreground">
-          Your response has been recorded. Feel free to close this window or register a new response by clicking the button below.
-        </p>
-      </div>
-
-      <div class="mx-auto rounded-full bg-primary/10 p-6 text-primary w-fit">
-        <Check class="h-16 w-16" />
-      </div>
-
-      <Button 
-        class="w-full mt-8"
-        size="lg"
-        onclick={() => window.location.reload()}>
-        Submit Another Response
-      </Button>
-    </div>
-  </div>
-{/if}
+  <FinalPage />
+{:else}
   <div class="flex min-h-screen w-full flex-col overflow-hidden">
-    <header class="bg-background sticky top-0 flex h-16 items-center gap-4 border-b px-4 md:px-6">
-   
-    
-    </header>
     <main
-      class="bg-muted/40 flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10"
+      class="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10"
     >
       <div class="mx-auto grid w-full max-w-6xl gap-2">
         <h1 class="text-4xl font-bold text-center md:text-left mb-4"> Clinical Audit Template</h1>
@@ -218,7 +198,7 @@
 
         <!-- Form Content -->
         <div class="grid gap-6">
-          <Card.Root>
+          <Card.Root class="bg-transparent">
             <Card.Header>
               <Card.Title>
                 {#if currentStep === 1}
@@ -263,36 +243,48 @@
                 {#if currentStep === 1}
                   <!-- PATIENT INFORMATION -->
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
                     <div class="space-y-2">
                       <Label for="uniquePatientId">Unique Patient ID</Label>
                       <Input 
                         id="uniquePatientId"
                         name="uniquePatientId"
                         bind:value={$form.uniquePatientId}
-                        placeholder="Enter patient ID"
-                        aria-invalid={$errors.uniquePatientId ? 'true' : undefined}
-                        class={$errors.uniquePatientId ? 'border-destructive' : ''}
                       />
                       {#if $errors.uniquePatientId}
                         <span class="text-destructive text-sm">{$errors.uniquePatientId}</span>
                       {/if}
                     </div>
 
-                    <div class="space-y-2">
-                      <Label for="sex">Sex</Label>
-                      <select 
-                        id="sex"
-                        name="sex"
-                        bind:value={$form.sex}
-                        class={`w-full rounded-md border border-input bg-background px-3 py-2 ${
-                          $errors.sex ? 'border-destructive' : ''
-                        }`}
-                        aria-invalid={$errors.sex ? 'true' : undefined}
-                      >
-                        <option value="">Select sex</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                      </select>
+                    <div class="space-y-2 md:col-span-1">
+                      <Label for="facility">Select the facility</Label>
+                      <Select.Root type="single" name="facility" bind:value={$form.facility}>
+                        <Select.Trigger class="w-full">
+                          {facilityTriggerContent}
+                        </Select.Trigger>
+                        <Select.Content>
+                          {#each facilityOptions as option}
+                            <Select.Item value={option.value}>{option.label}</Select.Item>
+                          {/each}
+                        </Select.Content>
+                      </Select.Root>
+                      {#if $errors.facility}
+                        <span class="text-destructive text-sm">{$errors.facility}</span>
+                      {/if}
+                    </div>
+
+                    <div class="space-y-2 md:col-span-1">
+                      <Label for="sex">Select the Sex</Label>
+                      <Select.Root type="single" name="sex" bind:value={$form.sex}>
+                        <Select.Trigger class="w-full">
+                          {sexTriggerContent}
+                        </Select.Trigger>
+                        <Select.Content>
+                          {#each sexOptions as option}
+                            <Select.Item value={option.value}>{option.label}</Select.Item>
+                          {/each}
+                        </Select.Content>
+                      </Select.Root>
                       {#if $errors.sex}
                         <span class="text-destructive text-sm">{$errors.sex}</span>
                       {/if}
@@ -300,29 +292,54 @@
 
                     <div class="space-y-2">
                       <Label for="dateOfBirth">Date of Birth</Label>
-                      <Input 
-                        id="dateOfBirth"
-                        name="dateOfBirth"
-                        type="date"
-                        bind:value={$form.dateOfBirth}
-                        aria-invalid={$errors.dateOfBirth ? 'true' : undefined}
-                        class={$errors.dateOfBirth ? 'border-destructive' : ''}
-                      />
+                      <div class="relative">
+                        <Input 
+                          id="dateOfBirth"
+                          name="dateOfBirth"
+                          type="date"
+                          bind:value={$form.dateOfBirth}
+                          aria-invalid={$errors.dateOfBirth ? 'true' : undefined}
+                          class={$errors.dateOfBirth ? 'border-destructive pl-10' : 'pl-10'}
+                        />
+                        <CalendarIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      </div>
                       {#if $errors.dateOfBirth}
                         <span class="text-destructive text-sm">{$errors.dateOfBirth}</span>
                       {/if}
                     </div>
 
+             
+                    <div class="space-y-2 md:col-span-1">
+                      <Label for="hIVRelatedDeath">HIV related death?</Label>
+                  
+                    <Select.Root type="single" name="hIVRelatedDeath" bind:value={$form.hIVRelatedDeath}>
+                      <Select.Trigger >
+                        {$form.hIVRelatedDeath
+                          ? $form.hIVRelatedDeath
+                          : "Select HIV related death"}
+                      </Select.Trigger>
+                      <Select.Content >
+                        <Select.Item value="Yes">Yes</Select.Item>
+                        <Select.Item value="No">No</Select.Item>
+                      </Select.Content>
+                    </Select.Root>
+                    {#if $errors.hIVRelatedDeath}
+                    <span class="text-destructive text-sm">{$errors.hIVRelatedDeath}</span>
+                  {/if}
+                    </div>
                     <div class="space-y-2">
                       <Label for="artStartDate">ART Start Date</Label>
-                      <Input 
-                        id="artStartDate"
-                        name="artStartDate"
-                        type="date"
-                        bind:value={$form.artStartDate}
-                        aria-invalid={$errors.artStartDate ? 'true' : undefined}
-                        class={$errors.artStartDate ? 'border-destructive' : ''}
-                      />
+                      <div class="relative">
+                        <Input 
+                          id="artStartDate"
+                          name="artStartDate"
+                          type="date"
+                          bind:value={$form.artStartDate}
+                          aria-invalid={$errors.artStartDate ? 'true' : undefined}
+                          class={$errors.artStartDate ? 'border-destructive pl-10' : 'pl-10'}
+                        />
+                        <CalendarIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      </div>
                       {#if $errors.artStartDate}
                         <span class="text-destructive text-sm">{$errors.artStartDate}</span>
                       {/if}
@@ -330,14 +347,17 @@
 
                     <div class="space-y-2">
                       <Label for="lastPickupDate">Last Pickup Date</Label>
-                      <Input 
-                        id="lastPickupDate"
-                        name="lastPickupDate"
-                        type="date"
-                        bind:value={$form.lastPickupDate}
-                        aria-invalid={$errors.lastPickupDate ? 'true' : undefined}
-                        class={$errors.lastPickupDate ? 'border-destructive' : ''}
-                      />
+                      <div class="relative">
+                        <Input 
+                          id="lastPickupDate"
+                          name="lastPickupDate"
+                          type="date"
+                          bind:value={$form.lastPickupDate}
+                          aria-invalid={$errors.lastPickupDate ? 'true' : undefined}
+                          class={$errors.lastPickupDate ? 'border-destructive pl-10' : 'pl-10'}
+                        />
+                        <CalendarIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      </div>
                       {#if $errors.lastPickupDate}
                         <span class="text-destructive text-sm">{$errors.lastPickupDate}</span>
                       {/if}
@@ -345,14 +365,17 @@
 
                     <div class="space-y-2">
                       <Label for="dateOfDeath">Date of Death</Label>
-                      <Input 
-                        id="dateOfDeath"
-                        name="dateOfDeath"
-                        type="date"
-                        bind:value={$form.dateOfDeath}
-                        aria-invalid={$errors.dateOfDeath ? 'true' : undefined}
-                        class={$errors.dateOfDeath ? 'border-destructive' : ''}
-                      />
+                      <div class="relative">
+                        <Input 
+                          id="dateOfDeath"
+                          name="dateOfDeath"
+                          type="date"
+                          bind:value={$form.dateOfDeath}
+                          aria-invalid={$errors.dateOfDeath ? 'true' : undefined}
+                          class={$errors.dateOfDeath ? 'border-destructive pl-10' : 'pl-10'}
+                        />
+                        <CalendarIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      </div>
                       {#if $errors.dateOfDeath}
                         <span class="text-destructive text-sm">{$errors.dateOfDeath}</span>
                       {/if}
@@ -360,13 +383,17 @@
 
                     <div class="space-y-2">
                       <Label for="dateOfDeathConfirmed">Date of Death Was Confirmed</Label>
-                      <Input 
-                        id="dateOfDeathConfirmed"
-                        name="dateOfDeathConfirmed"
-                        bind:value={$form.dateOfDeathConfirmed}
-                        aria-invalid={$errors.dateOfDeathConfirmed ? 'true' : undefined}
-                        class={$errors.dateOfDeathConfirmed ? 'border-destructive' : ''}
-                      />
+                      <div class="relative">
+                        <Input 
+                          id="dateOfDeathConfirmed"
+                          name="dateOfDeathConfirmed"
+                          type="date"
+                          bind:value={$form.dateOfDeathConfirmed}
+                          aria-invalid={$errors.dateOfDeathConfirmed ? 'true' : undefined}
+                          class={$errors.dateOfDeathConfirmed ? 'border-destructive pl-10' : 'pl-10'}
+                        />
+                        <CalendarIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      </div>
                       {#if $errors.dateOfDeathConfirmed}
                         <span class="text-destructive text-sm">{$errors.dateOfDeathConfirmed}</span>
                       {/if}
@@ -386,7 +413,7 @@
                       {/if}
                     </div>
 
-                    <div class="space-y-2">
+                    <div class="space-y-2 md:col-span-2">
                       <Label for="deathInfoValidator">Death Information Validated By</Label>
                       <Input 
                         id="deathInfoValidator"
@@ -437,7 +464,7 @@
                     </div>
 
                     <div class="space-y-2">
-                      <Label for="medicationsAndTreatments">Medications & Previous Treatments Prior to Death</Label>
+                      <Label for="medicationsAndTreatments">Medications & Previous Treatments</Label>
                       <textarea 
                         id="medicationsAndTreatments"
                         name="medicationsAndTreatments"
@@ -451,39 +478,41 @@
                         <span class="text-destructive text-sm">{$errors.medicationsAndTreatments}</span>
                       {/if}
                     </div>
-
-                    <div class="space-y-2">
-                      <Label for="primaryDiagnosis">Primary Diagnosis (if any)</Label>
-                      <textarea 
-                        id="primaryDiagnosis"
-                        name="primaryDiagnosis"
-                        bind:value={$form.primaryDiagnosis}
-                        class={`w-full min-h-[150px] rounded-md border bg-background px-3 py-2 ${
-                          $errors.primaryDiagnosis ? 'border-destructive' : 'border-input'
-                        }`}
-                        aria-invalid={$errors.primaryDiagnosis ? 'true' : undefined}
-                      ></textarea>
-                      {#if $errors.primaryDiagnosis}
-                        <span class="text-destructive text-sm">{$errors.primaryDiagnosis}</span>
-                      {/if}
-                    </div>
-
-                    <div class="space-y-2">
-                      <Label for="secondaryDiagnosis">Secondary Diagnosis (if any)</Label>
-                      <textarea 
-                        id="secondaryDiagnosis"
-                        name="secondaryDiagnosis"
-                        bind:value={$form.secondaryDiagnosis}
-                        class={`w-full min-h-[150px] rounded-md border bg-background px-3 py-2 ${
-                          $errors.secondaryDiagnosis ? 'border-destructive' : 'border-input'
-                        }`}
-                        aria-invalid={$errors.secondaryDiagnosis ? 'true' : undefined}
-                      ></textarea>
-                      {#if $errors.secondaryDiagnosis}
-                        <span class="text-destructive text-sm">{$errors.secondaryDiagnosis}</span>
-                      {/if}
-                    </div>
                   </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="space-y-2">
+                    <Label for="primaryDiagnosis">Primary Diagnosis (if any):</Label>
+                    <textarea 
+                      id="primaryDiagnosis"
+                      name="primaryDiagnosis"
+                      bind:value={$form.primaryDiagnosis}
+                      class={`w-full min-h-[150px] rounded-md border bg-background px-3 py-2 ${
+                        $errors.primaryDiagnosis ? 'border-destructive' : 'border-input'
+                      }`}
+                      aria-invalid={$errors.primaryDiagnosis ? 'true' : undefined}
+                    ></textarea>
+                    {#if $errors.primaryDiagnosis}
+                      <span class="text-destructive text-sm">{$errors.primaryDiagnosis}</span>
+                    {/if}
+                  </div>
+                  
+                  <div class="space-y-2">
+                    <Label for="secondaryDiagnosis">Secondary Diagnosis (if any):</Label>
+                    <textarea 
+                      id="secondaryDiagnosis"
+                      name="secondaryDiagnosis"
+                      bind:value={$form.secondaryDiagnosis}
+                      class={`w-full min-h-[150px] rounded-md border bg-background px-3 py-2 ${
+                        $errors.secondaryDiagnosis ? 'border-destructive' : 'border-input'
+                      }`}
+                      aria-invalid={$errors.secondaryDiagnosis ? 'true' : undefined}
+                    ></textarea>
+                    {#if $errors.secondaryDiagnosis}
+                      <span class="text-destructive text-sm">{$errors.secondaryDiagnosis}</span>
+                    {/if}
+                  </div>
+                  </div>
+            
                 {:else if currentStep === 3}
                   <!-- CLINICAL INFORMATION -->
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -628,24 +657,22 @@
 
                     <div class="space-y-2 md:col-span-2">
                       <Label for="socioeconomicStatus">Socioeconomic status prior to death</Label>
-                      <select 
-                        id="socioeconomicStatus"
-                        name="socioeconomicStatus"
-                        bind:value={$form.socioeconomicStatus}
-                        class={`w-full rounded-md border bg-background px-3 py-2 ${
-                          $errors.socioeconomicStatus ? 'border-destructive' : 'border-input'
-                        }`}
-                      >
-                        <option value="">Select status</option>
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                      </select>
+                      <Select.Root type="single" name="socioeconomicStatus" bind:value={$form.socioeconomicStatus}>
+                        <Select.Trigger class="w-full">
+                          {socioeconomicTriggerContent}
+                        </Select.Trigger>
+                        <Select.Content>
+                          {#each socioeconomicOptions as option}
+                            <Select.Item value={option.value}>{option.label}</Select.Item>
+                          {/each}
+                        </Select.Content>
+                      </Select.Root>
                       {#if $errors.socioeconomicStatus}
                         <span class="text-destructive text-sm">{$errors.socioeconomicStatus}</span>
                       {/if}
                     </div>
                   </div>
+               
                 {:else if currentStep === 5}
                   <!-- REVIEWER INFORMATION -->
                   <div class="grid grid-cols-1 gap-4">
@@ -719,4 +746,5 @@
       </div>
     </main>
   </div>
+{/if}
 

@@ -6,6 +6,8 @@ Date of Birth,date
 ART start date,date
 last pickup date,date
 Date of death:,date
+Select Facility: select,
+HIV Related death: select (Yes, No),
 Date of Death Was Confirmed,input
 Death Information Provided By,input
 Death Information Validated by:,input
@@ -29,4 +31,4 @@ Socioeconomic status prior to death,"select (low, medium, high) "
 Living conditions  prior to death,textarea
 REVIEWER INFORMATION,step 5
 Name of reviewer,input
-Date Of Review:,
+

@@ -1,10 +1,12 @@
 import { z } from 'zod';
-
+import { facilityValuesTuple } from "$lib";
 // Step 1: Patient Information
 export const step1Schema = z.object({
   uniquePatientId: z.string().min(1, "Unique Patient ID is required"),
   sex: z.enum(["Male", "Female"]).nullable(),
+  hIVRelatedDeath: z.enum(["Yes", "No"]).nullable(),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
+  facility: z.enum(facilityValuesTuple).describe("Please select a valid facility"),
   artStartDate: z.string().min(1, "ART start date is required"),
   lastPickupDate: z.string().min(1, "Last pickup date is required"),
   dateOfDeath: z.string().min(1, "Date of death is required"),
@@ -47,4 +49,7 @@ export const personalInfoSchema = step4Schema.extend({
 
 });
 
-export type PersonalInfoSchema = typeof personalInfoSchema; 
+export type PersonalInfoSchema = typeof personalInfoSchema;
+
+
+

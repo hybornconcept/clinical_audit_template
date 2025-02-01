@@ -3,10 +3,11 @@ import type { PageServerLoad } from './$types';
 
 export const load = (async () => {
   try {
-    // Get recent submissions first (limited to 10)
-    const recentSubmissions = await pb.collection('template').getList(1, 10, {
+    // Get all submissions with a higher limit
+    const recentSubmissions = await pb.collection('template').getList(1, 100, {
       sort: '-created',
-      // Fetch all fields for export but only display selected ones
+      // Fetch all fields
+      fields: '*',
       expand: ''
     });
 
