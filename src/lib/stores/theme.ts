@@ -1,13 +1,13 @@
 import { browser } from '$app/environment';
 
-// Get initial theme from localStorage or system preference
+// Get initial theme from localStorage or default to dark
 const getInitialTheme = () => {
     if (browser) {
         const stored = localStorage.getItem('theme');
         if (stored) return stored;
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        return 'dark';
     }
-    return 'light';
+    return 'dark';
 };
 
 // Toggle theme function
