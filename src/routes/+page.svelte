@@ -7,7 +7,7 @@
   import { Button } from "$lib/components/ui/button/index.js";
   import * as Card from "$lib/components/ui/card/index.js";
   import { Checkbox } from "$lib/components/ui/checkbox/index.js";
-  import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+
   import { zod } from 'sveltekit-superforms/adapters';
   import { Input } from "$lib/components/ui/input/index.js";
   import { Label } from "$lib/components/ui/label"
@@ -16,7 +16,7 @@
   } from "sveltekit-superforms";
   import {   step1Schema, step2Schema, step3Schema, step4Schema,personalInfoSchema } from '$lib/schemas';
   import {   socioeconomicOptions, facilityOptions, sexOptions } from '$lib';
-  import { Check } from 'lucide-svelte';
+
 	import type { PageData } from './$types.ts';
   import { page } from '$app/stores';
 	interface Props {

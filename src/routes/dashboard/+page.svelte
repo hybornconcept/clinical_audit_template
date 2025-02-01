@@ -105,7 +105,11 @@
       (s: ClinicalAuditRecord) => calculateAge(s.dateOfBirth, s.dateOfDeath) >= 15
     ).length);
 
-    const statsCards = [
+    const hivRelatedDeaths = $derived(data.recentSubmissions.filter((s: ClinicalAuditRecord) => 
+      s.hIVRelatedDeath?.toLowerCase().includes('Yes')
+    ).length);
+
+    const statsCards = $derived([
       {
         title: "Total Records",
         value: data.totalRecords,
@@ -126,13 +130,11 @@
       },
       {
         title: "No. of HIV Related death",
-        value: data.recentSubmissions.filter((s: ClinicalAuditRecord) => 
-          s.hIVRelatedDeath?.toLowerCase().includes('Yes')
-        ).length,
+        value: hivRelatedDeaths,
         description: "HIV/AIDS related deaths",
         icon: Ambulance
       }
-    ];
+    ]);
 </script>
   
 {#snippet statsCard(props: StatsCardProps)}
