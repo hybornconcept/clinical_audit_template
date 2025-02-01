@@ -1,4 +1,4 @@
-import { pb } from '$lib/pocketbase/client';
+import { pb } from '$lib/pocketbase';
 import type { PageServerLoad } from './$types';
 
 export const load = (async () => {

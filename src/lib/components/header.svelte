@@ -2,7 +2,7 @@
   import { Package2, Menu, Sun, Moon, SquareLibrary } from "lucide-svelte";
   import { Button } from "$lib/components/ui/button";
   import * as Sheet from "$lib/components/ui/sheet";
-  import { toggleMode } from "$lib/stores/theme";
+	import LightSwitch from '$lib/components/ui/light-switch/light-switch.svelte';
 </script>
 
 <header class="bg-background sticky top-0 flex h-16 items-center gap-4 border-b px-4 md:px-6">
@@ -21,11 +21,7 @@
         </a>
       </div>
       <div class="w-[88px] flex justify-end">
-        <Button onclick={toggleMode} variant="outline" size="icon">
-          <Sun class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span class="sr-only">Toggle theme</span>
-        </Button>
+        <LightSwitch />
       </div>
     </nav>
     
