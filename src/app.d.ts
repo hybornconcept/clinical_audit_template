@@ -11,6 +11,7 @@ declare global {
 
 	interface ClinicalAuditRecord {
 		uniquePatientId: string;
+		facility: string;
 		sex: string;
 		dateOfBirth: string;
 		artStartDate: string;
@@ -19,6 +20,7 @@ declare global {
 		dateOfDeathConfirmed: string;
 		deathInfoProvider: string;
 		deathInfoValidator: string;
+		hIVRelatedDeath: string;
 		causeOfDeath: string;
 		comorbidConditions: string;
 		medicationsAndTreatments: string;
@@ -35,8 +37,7 @@ declare global {
 		socioeconomicStatus: string;
 		livingConditions: string;
 		reviewerName: string;
-		hIVRelatedDeath: string;
-		facility: string;
+		
 		dateOfReview: string;
 	}
 
